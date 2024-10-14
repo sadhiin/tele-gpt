@@ -4,8 +4,6 @@ import json
 from dotenv import load_dotenv
 from tinydb import TinyDB, Query
 
-# Load the environment variables from .env file
-load_dotenv()
 
 class SimpleStorage:
     def __init__(self, db_path: str = 'db.json'):
@@ -18,8 +16,8 @@ class SimpleStorage:
                 pass  # Just create the file
             self.db = TinyDB(db_path)
 
-    def add_message(self, user_id: int, message: str):
-        self.db.insert({'user_id': user_id, 'message': message})
+    def add_message(self, user_id: int, message: str, response_text: str):
+        self.db.insert({'user_id': user_id, 'message': message, 'response_text': response_text})
 
     def get_messages(self, user_id: int):
         return self.db.search(Query().user_id == user_id)
