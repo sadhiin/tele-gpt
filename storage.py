@@ -1,14 +1,16 @@
 import os
 import json
+import asyncio
 # from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 from tinydb import TinyDB, Query
+import logging
 
 
 class SimpleStorage:
     def __init__(self, db_path: str = 'db.json'):
         assert db_path is not None and db_path.endswith('.json'), "db_path must be a valid path to a JSON file"
-
+        self.users = {}
         if not os.path.exists(db_path):
             self.db = TinyDB(db_path)
         else:
@@ -16,13 +18,25 @@ class SimpleStorage:
                 pass  # Just create the file
             self.db = TinyDB(db_path)
 
-    def add_message(self, user_id: int, message: str, response_text: str):
-        self.db.insert({'user_id': user_id, 'message': message, 'response_text': response_text})
+    async def add_message(self, user_id: int, message: str, response: str) -> None:
 
-    def get_messages(self, user_id: int):
+        await asyncio.to_thread(self._sync_add_message, user_id, message, response)
+
+    def _sync_add_message(self, user_id: int, message: str, response: str) -> None:
+        # Your synchronous database operation
+        self.db.insert({'user_id': user_id, 'message': message, 'response_text': response})
+
+    async def get_messages(self, user_id: int):
+        return await asyncio.to_thread(self._sync_get_messages, user_id)
+
+    def _sync_get_messages(self, user_id: int):
         return self.db.search(Query().user_id == user_id)
 
-    def clear_messages(self, user_id: int):
+    async def clear_messages(self, user_id: int):
+        logging.info(f"Clearing memory")
+        await asyncio.to_thread(self._sync_clear_messages, user_id)
+
+    def _sync_clear_messages(self, user_id: int):
         self.db.remove(Query().user_id == user_id)
 
     def close(self):
