@@ -1,6 +1,6 @@
 # [Tele-gpt](https://t.me/teleegpt_bot)
 
-This is a telegram bot that uses OpenAI's API and RapidAPI with Lama-3.2 70B conversation model (with online access) to generate responses to messages. It is built using the aiogram library.
+This is a telegram bot that uses OpenAI's API and RapidAPI with Lama-3.2 7B conversation model (with online access) to generate responses to messages. It is built using the aiogram library.
 
 ## Features
 
